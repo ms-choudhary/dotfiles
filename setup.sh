@@ -14,8 +14,10 @@ install_for_mac() {
 install_thoughtbot_rcm() {
   if type apt 2> /dev/null; then
     echo "System: debian/ubuntu"
+    install_for_ubuntu
   elif type brew 2> /dev/null; then
     echo "System: mac"
+    install_for_mac
   else
     echo "System not supported."
   fi
