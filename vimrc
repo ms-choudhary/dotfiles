@@ -1,5 +1,8 @@
 " Leader
-let mapleader = " "
+let mapleader = "-"
+
+" Use system clipboard as default register
+set clipboard=unnamed
 
 set backspace=2   " Backspace deletes like most programs in insert mode
 set nobackup
@@ -8,6 +11,7 @@ set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitigno
 set history=50
 set ruler         " show the cursor position all the time
 set showcmd       " display incomplete commands
+set ignorecase    " ignore case
 set incsearch     " do incremental searching
 set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
@@ -79,13 +83,12 @@ if executable('ag')
   endif
 endif
 
-" Make it obvious where 80 characters is
-set textwidth=80
-set colorcolumn=+1
+" Make it obvious where 80 characters is, although don't specify hard widths
+set colorcolumn=81
 
-" Numbers
-set number
-set numberwidth=5
+" Numbers: Don't need at present
+"set number
+"set numberwidth=5
 
 " Tab completion
 " will insert tab at beginning of line,
@@ -105,11 +108,19 @@ inoremap <S-Tab> <c-n>
 " Switch between the last two files
 nnoremap <leader><leader> <c-^>
 
+" vnoremap <silent> <C-c> :w !pbcopy<CR><CR>
+
 " Get off my lawn
-nnoremap <Left> :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up> :echoe "Use k"<CR>
-nnoremap <Down> :echoe "Use j"<CR>
+" nnoremap <Left> :echoe "Use h"<CR>
+" nnoremap <Right> :echoe "Use l"<CR>
+" nnoremap <Up> :echoe "Use k"<CR>
+" nnoremap <Down> :echoe "Use j"<CR>
+
+" Disable arrow movement, resize splits instead.
+nnoremap <Up>    :resize +10<CR>
+nnoremap <Down>  :resize -10<CR>
+nnoremap <Left>  :vertical resize -10<CR>
+nnoremap <Right> :vertical resize +10<CR>
 
 " vim-test mappings
 nnoremap <silent> <Leader>t :TestFile<CR>
@@ -117,6 +128,17 @@ nnoremap <silent> <Leader>s :TestNearest<CR>
 nnoremap <silent> <Leader>l :TestLast<CR>
 nnoremap <silent> <Leader>a :TestSuite<CR>
 nnoremap <silent> <leader>gt :TestVisit<CR>
+
+" NerdTree plugin confs
+nnoremap <Leader>n :NERDTreeFind<CR>
+nnoremap <Leader>N :NERDTreeToggle<CR>
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+let NERDTreeQuitOnOpen = 1
+
+" FZF plugin confs
+nnoremap <C-o> :Files<CR>
+nnoremap <Leader>f :BLines<CR>
 
 " Run commands that require an interactive shell
 nnoremap <Leader>r :RunInInteractiveShell<space>
