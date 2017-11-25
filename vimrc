@@ -122,6 +122,12 @@ nnoremap <Down>  :resize -10<CR>
 nnoremap <Left>  :vertical resize -10<CR>
 nnoremap <Right> :vertical resize +10<CR>
 
+" Map Shift + arrow keys to move between tab
+nnoremap <S-Up>     :tabr<CR>
+nnoremap <S-Down>   :tabl<CR>
+nnoremap <S-Right>  :tabn<CR>
+nnoremap <S-Left>   :tabp<CR>
+
 " vim-test mappings
 nnoremap <silent> <Leader>t :TestFile<CR>
 nnoremap <silent> <Leader>s :TestNearest<CR>
@@ -130,11 +136,18 @@ nnoremap <silent> <Leader>a :TestSuite<CR>
 nnoremap <silent> <leader>gt :TestVisit<CR>
 
 " NerdTree plugin confs
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 nnoremap <Leader>n :NERDTreeFind<CR>
 nnoremap <Leader>N :NERDTreeToggle<CR>
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 let NERDTreeQuitOnOpen = 1
+
+" vim-airline plugin confs
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
 
 " FZF plugin confs
 nnoremap <C-o> :Files<CR>
