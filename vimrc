@@ -136,8 +136,11 @@ nnoremap <silent> <Leader>a :TestSuite<CR>
 nnoremap <silent> <leader>gt :TestVisit<CR>
 
 " NerdTree plugin confs
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" If no file provided from cmdline, open by default
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
 nnoremap <Leader>n :NERDTreeFind<CR>
 nnoremap <Leader>N :NERDTreeToggle<CR>
 let NERDTreeMinimalUI = 1
