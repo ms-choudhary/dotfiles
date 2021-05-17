@@ -1,0 +1,36 @@
+call plug#begin('~/.vim/bundle')
+
+" Define bundles via Github repos
+Plug 'slashmili/alchemist.vim'
+"Plug 'christoomey/vim-run-interactive'
+Plug 'elixir-lang/vim-elixir'
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+"Plug 'janko-m/vim-test'
+"Plug 'kchmck/vim-coffee-script'
+"Plug 'pangloss/vim-javascript'
+"Plug 'pbrisbin/vim-mkdir'
+Plug 'scrooloose/syntastic'
+Plug 'slim-template/vim-slim'
+"Plug 'tpope/vim-bundler'
+Plug 'tpope/vim-endwise'
+"Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-fugitive'
+"Plug 'tpope/vim-projectionist'
+"Plug 'tpope/vim-rails'
+"Plug 'tpope/vim-rake'
+Plug 'tpope/vim-repeat'
+"Plug 'tpope/vim-rhubarb'
+Plug 'tpope/vim-surround'
+"Plug 'vim-ruby/vim-ruby'
+Plug 'scrooloose/nerdtree'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
+Plug 'scrooloose/nerdcommenter'
+"Plug 'jakedouglas/exuberant-ctags'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'benmills/vimux'
+"Plug 'jlanzarotta/bufexplorer'
+
+call plug#end()

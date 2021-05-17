@@ -1,0 +1,15 @@
+# dotfiles
+
+### Requirements
+
+Set zsh as default shell:
+
+```
+chsh -s $(which zsh)
+```
+
+### Installing
+
+```
+make
+```
