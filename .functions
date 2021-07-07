@@ -1,0 +1,51 @@
+#! /bin/zsh
+
+# docker rm container
+docker_stop_remove_id() {
+  docker stop "$@" && docker rm "$@"
+}
+
+# docker postgres
+dpg() {
+  docker run -d --name postgres -p 5432:5432 -e POSTGRES_HOST_AUTH_METHOD=trust "$@" postgres:alpine
+}
+
+# docker redis
+dredis() {
+  docker run -d "$@" redis
+}
+
+# Change dir to regex, loads fuzzy search incase of multiple match
+cds() {
+  DIRNAME=$1
+  BASEDIR=${BASEDIR:-.}
+
+  DIRS=$(find "$BASEDIR" -maxdepth 3 -type d -iname "*${DIRNAME}*")
+  NRESULTS=$(echo "$DIRS" | wc -l | bc)
+
+  if [[ "1" == "$NRESULTS" ]]; then
+    cd "$DIRS" || return 1
+  else
+    DIR=$(echo "$DIRS" | fzf)
+    cd "$DIR" || return 1
+  fi
+}
+
+# git clone to repositories dir in a structured fashion
+gclone() {
+  URL="$1"
+  PROJ_DIR="$URL"
+  cd "$REPOPATH"
+  if [[ "$URL" =~ "git@.*:.*\.git" ]]; then
+    PROJ_DIR=$(echo "$URL" | sed 's/git@\(.*\):\(.*\)\.git/\1\/\2/')
+  elif [[ "$URL" =~ "https:.*\.git" ]]; then
+    PROJ_DIR=$(echo "$URL" | sed 's/https:\/\/\(.*\)\.git/\1/')
+  fi
+
+  if [[ "$PROJ_DIR" != "$URL" ]]; then
+    git clone --depth 1 $URL $PROJ_DIR
+  else
+    echo "Url pattern not supported"
+    return 1
+  fi
+}

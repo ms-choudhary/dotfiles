@@ -1,1 +1,74 @@
-alias tmux="tmux -u"
+#! /bin/zsh
+
+pbcopy() {
+	stdin=$(</dev/stdin);
+	pbcopy="$(which pbcopy)";
+	if [[ -n "$pbcopy" ]]; then
+		echo "$stdin" | "$pbcopy"
+	else
+		echo "$stdin" | xclip -selection clipboard
+	fi
+}
+
+# run watch with diff
+alias watch='watch --diff'
+
+# unix
+alias -g ls="ls --color=auto"
+alias -g ll="ls -al"
+# ssh
+alias ssh="ssh -v -o StrictHostKeyChecking=no"
+
+# tmux
+alias ts="tmux new-session -A -s"
+alias tls="tmux list-sessions"
+alias th="tmux list-keys | less"
+
+# docker
+alias -g d="docker"
+alias -g dp="docker ps"
+alias -g dpw="watch docker ps"
+alias -g di="docker images"
+alias -g dl="docker logs -f"
+alias -g dx="docker exec -it"
+alias -g dr="docker run -d"
+alias -g drm="docker_stop_remove_id"
+alias -g drma='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
+alias -g drmc="docker builder prune --all"
+alias -g drmi="docker rmi"
+alias -g drmia='docker rmi $(docker images -q)'
+alias -g dprune="docker system prune"
+
+# kubectl
+alias -g k="kubectl"
+alias -g kcn="kubectl config use-context"
+alias -g kgcn="kubectl config get-contexts"
+alias -g kns='kubectl config set-context $(kubectl config current-context) --namespace'
+alias -g kusr='kubectl config set-context $(kubectl config current-context) --user'
+alias -g kg="kubectl get"
+alias -g kgo="kubectl get -o yaml"
+alias -g kgp="kubectl get pod"
+alias -g kgpa="kubectl get pod --all-namespaces"
+alias -g kgpw="watch kubectl get pod"
+alias -g kgpaw="watch kubectl get pod --all-namespaces"
+alias -g kgn="kubectl get node"
+alias -g kgnw="watch kubectl get node"
+alias -g kl="kubectl logs -f"
+alias -g klf="kubectl logs --tail 100 -f"
+alias -g kx="kubectl exec -it"
+alias -g kd="kubectl describe"
+alias -g kdp="kubectl describe pod"
+alias -g kdn="kubectl describe node"
+alias -g ke="kubectl edit"
+
+# Pretty print the path
+alias -g path='echo $PATH | tr -s ":" "\n"'
+
+# cds from repositories
+alias -g cdr="BASEDIR=$REPOPATH cds"
+
+# cds from go repositories
+alias cdg="BASEDIR=$GOPATH/src cds"
+
+# cds from home
+alias cdh="BASEDIR=$HOME cds"
