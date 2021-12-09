@@ -5,3 +5,8 @@ export GOPATH="${HOME}/go"
 
 # add go path
 export PATH="${GOPATH}/bin:${PATH}"
+
+# get-shit-done
+export PATH="${HOME}/Documents/repos/get-shit-done:${PATH}"
+
+export PATH="${HOME}/Documents/GoLand-2021.2.4/bin:${PATH}"

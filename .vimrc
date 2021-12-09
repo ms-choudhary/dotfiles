@@ -171,6 +171,7 @@ nnoremap <Leader>n :NERDTreeFind<CR>
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 let NERDTreeQuitOnOpen = 1
+let NERDTreeShowHidden=1
 
 " vim-airline plugin confs
 let g:airline#extensions#tabline#enabled = 1

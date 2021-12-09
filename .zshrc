@@ -21,6 +21,9 @@ HISTFILE=~/.zsh_history
 autoload -Uz compinit
 compinit
 
+# Use bash style comments
+setopt interactivecomments
+
 # completion
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache

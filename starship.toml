@@ -26,3 +26,6 @@ disabled = true
 
 [git_status]
 disabled = true
+
+[helm]
+disabled = true

@@ -1,21 +1,14 @@
 #! /bin/zsh
 
-pbcopy() {
-	stdin=$(</dev/stdin);
-	pbcopy="$(which pbcopy)";
-	if [[ -n "$pbcopy" ]]; then
-		echo "$stdin" | "$pbcopy"
-	else
-		echo "$stdin" | xclip -selection clipboard
-	fi
-}
+# edit dotfiles
+alias dotfiles='cd ~/dotfiles; vim .'
 
 # run watch with diff
 alias watch='watch --diff'
 
 # unix
-alias -g ls="ls --color=auto"
-alias -g ll="ls -al"
+alias ls="ls --color=auto"
+
 # ssh
 alias ssh="ssh -v -o StrictHostKeyChecking=no"
 
@@ -54,12 +47,12 @@ alias -g kgpaw="watch kubectl get pod --all-namespaces"
 alias -g kgn="kubectl get node"
 alias -g kgnw="watch kubectl get node"
 alias -g kl="kubectl logs -f"
-alias -g klf="kubectl logs --tail 100 -f"
 alias -g kx="kubectl exec -it"
 alias -g kd="kubectl describe"
 alias -g kdp="kubectl describe pod"
 alias -g kdn="kubectl describe node"
 alias -g ke="kubectl edit"
+alias -g neatl="kubectl neat | less"
 
 # Pretty print the path
 alias -g path='echo $PATH | tr -s ":" "\n"'
