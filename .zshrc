@@ -5,7 +5,15 @@
 eval "$(starship init zsh)"
 
 ## configure ls colors
-eval "$(dircolors -b)"
+if whence dircolors >/dev/null; then
+  eval "$(dircolors -b)"
+  zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+  alias ls='ls --color'
+else
+  export CLICOLOR=1
+  export LSCOLORS="Gxfxcxdxbxegedabagacad"
+  zstyle ':completion:*:default' list-colors ''
+fi
 
 setopt histignorealldups sharehistory
 

@@ -7,7 +7,7 @@ alias dotfiles='cd ~/dotfiles; vim .'
 alias watch='watch --diff'
 
 # unix
-alias ls="ls --color=auto"
+# alias ls="ls --color=auto"
 
 # ssh
 alias ssh="ssh -v -o StrictHostKeyChecking=no"

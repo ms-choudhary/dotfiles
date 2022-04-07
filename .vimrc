@@ -5,7 +5,7 @@ filetype plugin indent on
 " Leader
 let mapleader = "-"
 
-set clipboard=unnamedplus
+set clipboard=unnamed
 
 set noerrorbells                " No beeps
 set backspace=indent,eol,start  " Makes backspace key more powerful.

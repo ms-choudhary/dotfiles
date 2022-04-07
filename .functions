@@ -1,12 +1,19 @@
 #! /bin/zsh
 
 console() {
-  xdg-open https://console-openshift-console.apps.okd4v2.okd4beta.rapyuta.io/k8s/ns/$(kubectl config view --minify --output 'jsonpath={..namespace}')/$1
+  uri=https://console-openshift-console.apps.okd4v2.okd4beta.rapyuta.io/k8s/ns/$(kubectl config view --minify --output 'jsonpath={..namespace}')/$1
+  if [[ -f $(which open) ]]; then
+    open $uri
+  else
+    xdg-open $uri
+  fi
 }
 
 pbcopy() {
 	stdin=$(</dev/stdin);
-	pbcopy="$(which pbcopy)";
+  #this func hides the original pbcopy
+	#pbcopy="$(which pbcopy)";
+  pbcopy="/usr/bin/pbcopy"
 	if [[ -f "$pbcopy" ]]; then
 		echo "$stdin" | "$pbcopy"
 	else
@@ -57,7 +64,7 @@ gclone() {
   fi
 
   if [[ "$PROJ_DIR" != "$URL" ]]; then
-    git clone --depth 1 $URL $PROJ_DIR
+    git clone --recurse-submodules $URL $PROJ_DIR
   else
     echo "Url pattern not supported"
     return 1

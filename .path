@@ -6,6 +6,12 @@ export GOPATH="${HOME}/go"
 # add go path
 export PATH="${GOPATH}/bin:${PATH}"
 
+# add home bin path
+export PATH="${HOME}/bin:${PATH}"
+
+# mac psql
+#export PATH="/usr/local/opt/libpq/bin:$PATH"
+
 # get-shit-done
 export PATH="${HOME}/Documents/repos/get-shit-done:${PATH}"
 

@@ -12,6 +12,7 @@ dotfiles: ## Installs the dotfiles.
 	done; \
 	mkdir -p ~/.config
 	ln -sfn $(CURDIR)/starship.toml $(HOME)/.config/starship.toml
+	ln -sfn $(CURDIR)/ssh_config $(HOME)/.ssh/config
 
 .PHONY: help
 help:

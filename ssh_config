@@ -1,2 +1,28 @@
+Host apue
+  Hostname 127.0.0.1
+  Port 2222
+  IdentityFile ~/.ssh/apue
+  User msc
+
 Host github.com
   IdentityFile ~/.ssh/id_github
+
+Host bitbucket.org
+  IdentityFile ~/.ssh/id_github
+
+Host bastion-sre
+  HostName 20.89.91.153
+  User azureuser
+
+Host bastion-okd4
+  HostName 40.81.203.194
+  IdentityFile ~/.ssh/id_github
+  User azureuser
+
+Host prod-bastion-okd4
+  HostName 52.185.187.223
+  User azureuser
+
+Host 10.*
+  User core
+  ProxyCommand ssh bastion-okd4 -W %h:%p
