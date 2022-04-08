@@ -1,26 +1,33 @@
 #! /bin/bash
 
-set -e
+# uncomment to debug
+# set -o xtrace
+set -o errexit
 set -o pipefail
 
-install_podman_apt() {
+install_podman_ubuntu() {
   echo 'installing podman'
   sudo apt-get install -y podman
 }
 
-install_podman_brew() {
+install_podman_fedora() {
+  echo 'installing podman'
+  sudo dnf install -y podman
+}
+
+install_podman_mac() {
   echo 'installing podman'
   brew install podman
 }
 
-install_vagrant_apt() {
+install_vagrant_ubuntu() {
   echo 'installing vagrant'
   curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
   sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
   sudo apt-get update && sudo apt-get install vagrant
 }
 
-install_vagrant_brew() {
+install_vagrant_mac() {
   echo 'installing vagrant'
   brew tap hashicorp/tap
   brew install vagrant
@@ -30,11 +37,12 @@ install_alacritty() {
   # snap install alacritty --classic
   # no concrete easy instructions
   # for ubuntu: go to app store & install
+  # for fedora silverblue: couldn't install yet in toolbox
   # for macos: go to alacritty release & download dmg & install
   echo "unsupported: install alacritty manually"
 }
 
-install_font_brew() {
+install_font_mac() {
   brew tap homebrew/cask-fonts
   brew install --cask font-fira-code
 }
@@ -47,15 +55,6 @@ install_asdf() {
 install_starship() {
   echo 'installing starship'
   sh -c "$(curl -fsSL https://starship.rs/install.sh)"
-}
-
-install_base_apt() {
-  echo 'installing base'
-  sudo apt-get update && apt-get install -y git  \
-                          vim  \
-                          zsh  \
-                          htop \
-                          tmux
 }
 
 install_asdf_plugins() {
@@ -78,19 +77,51 @@ install_asdf_plugins() {
   asdf install awscli latest
 }
 
-install_base_brew() {
+install_base_ubuntu() {
+  echo 'installing base'
+  sudo apt-get update && apt-get install -y git  \
+                          vim  \
+                          zsh  \
+                          htop \
+                          tmux
+}
+
+install_base_mac() {
   echo 'installing base'
   brew update && brew install \
                       tmux \
                       watch \
                       tldr \
                       ag \
-                      htop
+                      htop \
+                      gh
+}
+
+install_base_fedora() {
+  echo 'installing base'
+  dnf install -y \
+    git \
+    vim \
+    zsh \
+    tmux \
+    watch \
+    tldr \
+    ag \
+    htop \
+    gh
+}
+
+install_ssh_keys() {
+  gh auth login
+  ssh-keygen -f ~/.ssh/id_github -t ed25519 -C "$(whoami)-$PLATFORM"
+  gh ssh-key add ~/.ssh/id_github -t "$(whoami)-$PLATFORM"
 }
 
 install_dotfiles() {
   if [[ ! -d "${HOME}/dotfiles" ]]; then
     git clone git@github.com:ms-choudhary/dotfiles.git "${HOME}/dotfiles"
+    chsh -s $(which zsh)
+    mkdir -p ~/.vim/autoload && cp ~/dotfiles/.vim/autoload/* ~/.vim/autoload/
     (cd "${HOME}/dotfiles" && make)
   fi
 }
@@ -117,8 +148,25 @@ install_dotfiles() {
 
 usage() {
 	echo "Usage:"
-	echo "  asdf-plugins                                - Install asdf-plugins for tools"
+  echo "  base                                        - Install base tools"
+  echo "  ssh-keys                                    - Generate new ssh keys and add to github"
+  echo "  dotfiles                                    - Clone and install dotfiles"
+	echo "  asdf                                        - Install asdf and asdf-plugins for tools"
+  echo "  podman                                      - Install podman"
+  echo "  vagrant                                     - Install vagrant"
 }
+
+if [[ $(uname) == "Darwin" ]]; then
+  PLATFORM=mac
+elif [[ $(uname) == "Linux" ]]; then
+  . /etc/os-release
+  PLATFORM=$ID
+else 
+  echo "ERROR: couldn't identify platform"
+  exit 1
+fi
+
+echo "PLATFORM: $PLATFORM"
 
 main() {
   local cmd=$1
@@ -128,8 +176,19 @@ main() {
     exit 1
   fi
 
-  if [[ $cmd == "asdf-plugins" ]]; then
+  if [[ $cmd == "base" ]]; then
+    install_base_$PLATFORM
+  elif [[ $cmd == "ssh-keys" ]]; then
+    install_ssh_keys
+  elif [[ $cmd == "dotfiles" ]]; then
+    install_dotfiles
+  elif [[ $cmd == "asdf" ]]; then
+    install_asdf
     install_asdf_plugins
+  elif [[ $cmd == "podman" ]]; then
+    install_podman_$PLATFORM
+  elif [[ $cmd == "vagrant" ]]; then
+    install_vagrant_$PLATFORM
   else
     usage
   fi
