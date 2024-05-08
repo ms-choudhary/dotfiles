@@ -192,6 +192,13 @@ nnoremap <Leader>gd :GoDoc<space>
 nnoremap <Leader>gi :GoImport<space>
 nnoremap <Leader>gri :GoDrop<space>
 nnoremap <Leader>gd :GoDef<CR>
+nnoremap <Leader>gd :GoDebugStart<CR>
+nnoremap <Leader>gq :GoDebugStop<CR>
+nnoremap <Leader>gx :GoDebugBreakpoint<CR>
+nnoremap <Leader>gn :GoDebugNext<CR>
+nnoremap <Leader>gs :GoDebugStep<CR>
+nnoremap <Leader>gso :GoDebugStepOut<CR>
+nnoremap <Leader>gc :GoDebugContinue<CR>
 
 " vimux confs
 let g:VimuxOrientation = "h"

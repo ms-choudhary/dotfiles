@@ -94,7 +94,9 @@ install_base_mac() {
                       tldr \
                       ag \
                       htop \
-                      gh
+                      gh \
+                      yq
+                      colordiff
 }
 
 install_base_fedora() {

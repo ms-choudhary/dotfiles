@@ -1,3 +1,20 @@
+Host edge
+  Hostname 127.0.0.1
+  Port 9999
+  IdentityFile ~/.ssh/id_github
+  User rr
+
+Host sysbox
+  Hostname 127.0.0.1
+  Port 9000
+  User rapyuta
+
+Host iot
+  Hostname 127.0.0.1
+  Port 3022
+  IdentityFile ~/.ssh/id_github
+  User root
+
 Host apue
   Hostname 127.0.0.1
   Port 2222
@@ -12,6 +29,8 @@ Host bitbucket.org
 
 Host bastion-sre
   HostName 20.89.91.153
+  IdentityFile ~/.ssh/id_github
+  ForwardAgent yes
   User azureuser
 
 Host bastion-okd4
@@ -21,8 +40,11 @@ Host bastion-okd4
 
 Host prod-bastion-okd4
   HostName 52.185.187.223
+  IdentityFile ~/.ssh/id_github
+  ForwardAgent yes
   User azureuser
 
-Host 10.*
-  User core
-  ProxyCommand ssh bastion-okd4 -W %h:%p
+#Host 10.*
+  #User core
+  #IdentityFile ~/.ssh/id_github
+  #ProxyCommand ssh bastion-okd4 -W %h:%p
