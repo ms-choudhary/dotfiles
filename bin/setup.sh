@@ -134,12 +134,12 @@ install_base_fedora() {
 install_ssh_keys() {
   gh auth login
   ssh-keygen -f ~/.ssh/id_github -t ed25519 -C "$(whoami)-$PLATFORM"
-  gh ssh-key add ~/.ssh/id_github -t "$(whoami)-$PLATFORM"
+  gh ssh-key add ~/.ssh/id_github.pub -t "$(whoami)-$PLATFORM"
 }
 
 install_dotfiles() {
   if [[ ! -d "${HOME}/dotfiles" ]]; then
-    git clone git@github.com:ms-choudhary/dotfiles.git "${HOME}/dotfiles"
+    GIT_SSH_COMMAND='ssh -i ~/.ssh/id_github -o IdentitiesOnly=yes' git clone git@github.com:ms-choudhary/dotfiles.git "${HOME}/dotfiles"
     chsh -s $(which zsh)
     mkdir -p ~/.vim/autoload && cp ~/dotfiles/.vim/autoload/* ~/.vim/autoload/
     (cd "${HOME}/dotfiles" && make)
