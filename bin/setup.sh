@@ -90,6 +90,10 @@ install_base_mac() {
   if ! which brew; then
     echo 'installing homebrew'
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+
+    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 
   echo 'installing base'
@@ -100,7 +104,7 @@ install_base_mac() {
                       ag \
                       htop \
                       gh \
-                      yq
+                      yq \
                       colordiff
 
   install_font_mac
@@ -142,6 +146,7 @@ install_dotfiles() {
 usage() {
 	echo "Usage:"
   echo "  base                                        - Install base tools"
+  echo "  fonts                                       - Install fonts"
   echo "  ssh-keys                                    - Generate new ssh keys and add to github"
   echo "  dotfiles                                    - Clone and install dotfiles"
 	echo "  asdf                                        - Install asdf and asdf-plugins for tools"
@@ -171,6 +176,8 @@ main() {
 
   if [[ $cmd == "base" ]]; then
     install_base_$PLATFORM
+  elif [[ $cmd == "fonts" ]]; then
+    install_font_$PLATFORM
   elif [[ $cmd == "ssh-keys" ]]; then
     install_ssh_keys
   elif [[ $cmd == "dotfiles" ]]; then
