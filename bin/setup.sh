@@ -107,6 +107,11 @@ install_base_mac() {
                       yq \
                       colordiff
 
+  install_font_mac
+
+  if ! which starship; then
+    install_starship
+  fi
   # install firefox
   # install alacritty
   # install docker-for-mac
@@ -144,7 +149,6 @@ install_dotfiles() {
 usage() {
 	echo "Usage:"
   echo "  base                                        - Install base tools"
-  echo "  fonts                                       - Install fonts"
   echo "  ssh-keys                                    - Generate new ssh keys and add to github"
   echo "  dotfiles                                    - Clone and install dotfiles"
 	echo "  asdf                                        - Install asdf and asdf-plugins for tools"
@@ -174,8 +178,6 @@ main() {
 
   if [[ $cmd == "base" ]]; then
     install_base_$PLATFORM
-  elif [[ $cmd == "fonts" ]]; then
-    install_font_$PLATFORM
   elif [[ $cmd == "ssh-keys" ]]; then
     install_ssh_keys
   elif [[ $cmd == "dotfiles" ]]; then
