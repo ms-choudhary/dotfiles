@@ -107,8 +107,6 @@ install_base_mac() {
                       yq \
                       colordiff
 
-  install_font_mac
-
   # install firefox
   # install alacritty
   # install docker-for-mac
