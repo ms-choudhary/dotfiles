@@ -104,6 +104,10 @@ install_base_mac() {
                       colordiff
 
   install_font_mac
+
+  # install firefox
+  # install alacritty
+  # install docker-for-mac
 }
 
 install_base_fedora() {
