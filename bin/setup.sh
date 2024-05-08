@@ -87,6 +87,11 @@ install_base_ubuntu() {
 }
 
 install_base_mac() {
+  if ! which brew; then
+    echo 'installing homebrew'
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+
   echo 'installing base'
   brew update && brew install \
                       tmux \
@@ -97,6 +102,8 @@ install_base_mac() {
                       gh \
                       yq
                       colordiff
+
+  install_font_mac
 }
 
 install_base_fedora() {
@@ -127,26 +134,6 @@ install_dotfiles() {
     (cd "${HOME}/dotfiles" && make)
   fi
 }
-
-#if [[ $(uname) == "Linux" ]]; then
-  #echo "setting up linux..."
-  #install_base_apt
-  #install_asdf
-  #install_starship
-  #install_vagrant_apt
-
-
-#elif [[ $(uname) == "Darwin" ]]; then
-  #echo "setting up macos..."
-  #install_base_brew
-  #install_asdf
-  #install_starship
-  #install_vagrant_brew
-
-#else
-  #echo "error: unsupported os"
-  #exit 1
-#fi
 
 usage() {
 	echo "Usage:"
