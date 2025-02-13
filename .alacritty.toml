@@ -1,0 +1,11 @@
+[colors.primary]
+background = "#000000"
+
+[font]
+size = 15.0
+
+[font.normal]
+family = "Fira Code"
+
+[selection]
+save_to_clipboard = true

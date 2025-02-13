@@ -41,7 +41,7 @@ cds() {
   DIRNAME=$1
   BASEDIR=${BASEDIR:-.}
 
-  DIRS=$(find "$BASEDIR" -maxdepth 3 -type 'd' -iname "*${DIRNAME}*")
+  DIRS=$(find "$BASEDIR" -maxdepth 4 -type 'd' -iname "*${DIRNAME}*")
   NRESULTS=$(echo "$DIRS" | wc -l | bc)
 
   if [[ "1" == "$NRESULTS" ]]; then
