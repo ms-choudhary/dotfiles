@@ -1,7 +1,7 @@
 SHELL := zsh
 
 .PHONY: all
-all: dotfiles
+all: dotfiles bins etcs
 
 .PHONY: dotfiles
 dotfiles: ## Installs the dotfiles.
@@ -13,6 +13,19 @@ dotfiles: ## Installs the dotfiles.
 	mkdir -p ~/.config
 	ln -sfn $(CURDIR)/starship.toml $(HOME)/.config/starship.toml
 	ln -sfn $(CURDIR)/ssh_config $(HOME)/.ssh/config
+
+bins: ## Installs the binary scripts
+	mkdir -p ~/bin
+	for file in $(shell find $(CURDIR)/bin -type f); do \
+		f=$$(basename $$file); \
+	  ln -sfn $$file $(HOME)/bin/$$f; \
+	done;
+
+etcs: ## Installs etc config files
+	for file in $(shell find $(CURDIR)/etc -type f); do \
+		mkdir -p /$$(dirname $$file); \
+	  ln -sfn $$file /$$file; \
+	done;
 
 .PHONY: help
 help:

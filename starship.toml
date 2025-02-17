@@ -29,3 +29,9 @@ disabled = true
 
 [helm]
 disabled = true
+
+#[username]
+#disabled = true
+
+[hostname]
+disabled = true

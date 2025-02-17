@@ -48,8 +48,10 @@ install_font_mac() {
 }
 
 install_asdf() {
-  echo 'installing asdf'
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
+  if ! which asdf; then
+    echo 'installing asdf'
+    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
+  fi
 }
 
 install_starship() {
@@ -59,31 +61,55 @@ install_starship() {
 
 install_asdf_plugins() {
   echo 'installing asdf plugins'
-  asdf plugin add kubectl 
-  asdf plugin add helm 
-  asdf plugin add oc 
-  asdf plugin add golang 
-  asdf plugin add gcloud
-  asdf plugin add azure-cli
-  asdf plugin add awscli
+  #asdf plugin add kubectl 
+  #asdf plugin add helm 
+  #asdf plugin add golang 
 
-  asdf install kubectl 1.19.16
-  asdf install helm 3.6.3
-  asdf install helm 2.9.1
-  asdf install oc 4.6.0
-  asdf install golang 1.16.4
-  asdf install gcloud latest
-  asdf install azure-cli latest
-  asdf install awscli latest
+  asdf install kubectl latest
+  asdf install helm latest
+  asdf install golang latest
 }
 
 install_base_ubuntu() {
   echo 'installing base'
   sudo apt-get update && apt-get install -y git  \
+                          gnupg \
+                          curl \
                           vim  \
                           zsh  \
                           htop \
                           tmux
+}
+
+install_base_debian() {
+  echo 'installing base'
+
+  packages_file="./debian.packages"
+  if [ -z "$DOTFILES" ]; then
+    packages_file="$DOTFILES/bin/debian.packages"
+  fi
+  sudo apt-get update && apt-get install -y $(cat $packages_file)
+
+  if ! which starship; then
+    install_starship
+  fi
+
+  echo "install bw, tldr"
+  npm install -g @bitwarden/cli
+  npm install -g tldr
+
+  echo "deleting root password"
+  passwd -d root
+
+  if ! grep -q "^share" /etc/fstab; then
+    echo "adding virtiofs entry"
+    echo "share /root/shared virtiofs rw,nofail 0 0" | sudo tee -a /etc/fstab
+  fi
+
+  echo "chaging root home directory"
+  sed -i "s|\/root:|\/root\/shared\/$(hostname):|g" /etc/passwd
+
+  echo "PLEASE REBOOT YOUR SYSTEM"
 }
 
 install_base_mac() {
@@ -105,7 +131,9 @@ install_base_mac() {
                       htop \
                       gh \
                       yq \
-                      colordiff
+                      jq \
+                      colordiff \
+                      step
 
   install_font_mac
 
@@ -134,16 +162,17 @@ install_base_fedora() {
 install_ssh_keys() {
   gh auth login
   ssh-keygen -f ~/.ssh/id_github -t ed25519 -C "$(whoami)-$PLATFORM"
-  gh ssh-key add ~/.ssh/id_github.pub -t "$(whoami)-$PLATFORM"
+  gh ssh-key add ~/.ssh/id_github -t "$(whoami)-$PLATFORM"
 }
 
 install_dotfiles() {
   if [[ ! -d "${HOME}/dotfiles" ]]; then
-    GIT_SSH_COMMAND='ssh -i ~/.ssh/id_github -o IdentitiesOnly=yes' git clone git@github.com:ms-choudhary/dotfiles.git "${HOME}/dotfiles"
+    git clone git@github.com:ms-choudhary/dotfiles.git "${HOME}/dotfiles"
     chsh -s $(which zsh)
     mkdir -p ~/.vim/autoload && cp ~/dotfiles/.vim/autoload/* ~/.vim/autoload/
-    (cd "${HOME}/dotfiles" && make)
+    mkdir -p ~/projects/src
   fi
+  (cd "${HOME}/dotfiles" && make)
 }
 
 usage() {
@@ -152,8 +181,7 @@ usage() {
   echo "  ssh-keys                                    - Generate new ssh keys and add to github"
   echo "  dotfiles                                    - Clone and install dotfiles"
 	echo "  asdf                                        - Install asdf and asdf-plugins for tools"
-  echo "  podman                                      - Install podman"
-  echo "  vagrant                                     - Install vagrant"
+  echo "  golang                                      - Install golang"
 }
 
 if [[ $(uname) == "Darwin" ]]; then
@@ -185,10 +213,8 @@ main() {
   elif [[ $cmd == "asdf" ]]; then
     install_asdf
     install_asdf_plugins
-  elif [[ $cmd == "podman" ]]; then
-    install_podman_$PLATFORM
-  elif [[ $cmd == "vagrant" ]]; then
-    install_vagrant_$PLATFORM
+  elif [[ $cmd == "golang" ]]; then
+    install_golang_$PLATFORM
   else
     usage
   fi

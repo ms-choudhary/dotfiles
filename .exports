@@ -9,6 +9,7 @@ export GOPATH=$HOME/go
 
 # repositories
 export REPOPATH=$HOME/projects/src
+export DOTFILES=$HOME/dotfiles
 
 export MYTMUXCONF=$HOME/.tmux.conf
 export MYZSHCONF=$HOME/.zshrc

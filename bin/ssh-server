@@ -1,0 +1,23 @@
+#! /bin/bash
+
+set -o errexit
+#set -o xtrace
+
+session=$(cat ~/.bitwarden_session)
+password=$(bw get password bridge-ssh --session $session)
+
+ixhosts --hosts > /tmp/hosts
+
+if [[ "$1" ]]; then
+  if grep "$1" /tmp/hosts; then
+    server=$(grep "$1" /tmp/hosts | fzf)
+  else
+    server="$1"
+  fi
+else
+  server=$(cat /tmp/hosts | fzf)
+fi
+
+echo "sshing server.. $server"
+
+~/bin/auto-ssh "$password" "$server"

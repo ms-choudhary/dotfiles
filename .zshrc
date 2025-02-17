@@ -39,7 +39,7 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-colors ''
 
 ## source other important files
-for file in ~/.{aliases,functions,path,exports}; do
+for file in ~/.{exports,aliases,functions,path}; do
   if [[ -r "$file" ]] && [[ -f "$file" ]]; then
     # shellcheck source=/dev/null
     source "$file"
@@ -47,7 +47,7 @@ for file in ~/.{aliases,functions,path,exports}; do
 done
 
 # asdf
-. $HOME/.asdf/asdf.sh
+[ -f ~/.asdf/asdf.sh ] && source $HOME/.asdf/asdf.sh
 
 ## fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

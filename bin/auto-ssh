@@ -1,0 +1,29 @@
+#!/usr/bin/expect
+
+trap {
+ set rows [stty rows]
+ set cols [stty columns]
+ stty rows $rows columns $cols < $spawn_out(slave,name)
+} WINCH
+
+if { $argc != 2 } {
+  puts "usage: auto-ssh <password> <server>"
+  exit 1
+}
+
+set password [lindex $argv 0]
+set server [lindex $argv 1]
+
+set timeout 10
+spawn ssh bridge
+expect "password:"
+send "$password\r"
+expect "$ "
+send "sudo su\r"
+expect "password for mohit.choudhary:"
+send "$password\r"
+expect "# "
+send "ssh $server\r"
+expect "# "
+send "set -o vi\r"
+interact
