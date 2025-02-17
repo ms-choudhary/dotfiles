@@ -22,9 +22,9 @@ bins: ## Installs the binary scripts
 	done;
 
 etcs: ## Installs etc config files
-	for file in $(shell find $(CURDIR)/etc -type f); do \
+	for file in $(shell find etc -type f); do \
 		mkdir -p /$$(dirname $$file); \
-	  ln -sfn $$file /$$file; \
+	  ln -sfn $(CURDIR)/$$file /$$file; \
 	done;
 
 .PHONY: help

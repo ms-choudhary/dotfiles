@@ -1,7 +1,19 @@
 #! /bin/zsh
 
+
+# index specific
+alias k8s1sg='export KUBECONFIG=~/kubeconfigs/k8s1sg; kubectl config view | grep "server:"'
+alias k8s1am='export KUBECONFIG=~/kubeconfigs/k8s1am; kubectl config view | grep "server:"'
+alias k8s1va='export KUBECONFIG=~/kubeconfigs/k8s1va; kubectl config view | grep "server:"'
+alias k8sint='export KUBECONFIG=~/kubeconfigs/k8sint; kubectl config view | grep "server:"'
+alias k8spandoraext='export KUBECONFIG=~/kubeconfigs/k8pandoraext; kubectl config view | grep "server:"'
+alias k8s1ny='export KUBECONFIG=~/kubeconfigs/k8s1ny; kubectl config view | grep "server:"'
+alias k8s1sj='export KUBECONFIG=~/kubeconfigs/k8s1sj; kubectl config view | grep "server:"'
+alias k8sdata='export KUBECONFIG=~/kubeconfigs/k8sdata; kubectl config view | grep "server:"'
+alias k8sops='export KUBECONFIG=~/kubeconfigs/k8sops; kubectl config view | grep "server:"'
+
 # edit dotfiles
-alias dotfiles='cd ~/dotfiles; vim .'
+alias dotfiles='cd ~/dotfiles;'
 
 # run watch with diff
 alias watch='watch --diff'

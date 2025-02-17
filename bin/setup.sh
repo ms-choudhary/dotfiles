@@ -5,6 +5,11 @@
 set -o errexit
 set -o pipefail
 
+install_golang_debian() {
+  wget --directory-prefix /tmp https://go.dev/dl/go1.24.0.linux-arm64.tar.gz
+  rm -rf /usr/local/go && tar -C /usr/local -xzf /tmp/go1.24.0.linux-arm64.tar.gz
+}
+
 install_podman_ubuntu() {
   echo 'installing podman'
   sudo apt-get install -y podman
@@ -59,6 +64,14 @@ install_starship() {
   sh -c "$(curl -fsSL https://starship.rs/install.sh)"
 }
 
+install_kubectl_linux() {
+  if ! which kubectl; then
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    rm kubectl
+  fi
+}
+
 install_asdf_plugins() {
   echo 'installing asdf plugins'
   #asdf plugin add kubectl 
@@ -85,13 +98,19 @@ install_base_debian() {
   echo 'installing base'
 
   packages_file="./debian.packages"
-  if [ -z "$DOTFILES" ]; then
+  if [ ! -z "$DOTFILES" ]; then
     packages_file="$DOTFILES/bin/debian.packages"
   fi
-  sudo apt-get update && apt-get install -y $(cat $packages_file)
+  
+  apt-get update -o APT::Update::Error-Mode=any
+  apt-get install -y $(cat $packages_file)
 
   if ! which starship; then
     install_starship
+  fi
+
+  if ! which kubectl; then
+    install_kubectl_linux
   fi
 
   echo "install bw, tldr"
@@ -103,7 +122,7 @@ install_base_debian() {
 
   if ! grep -q "^share" /etc/fstab; then
     echo "adding virtiofs entry"
-    echo "share /root/shared virtiofs rw,nofail 0 0" | sudo tee -a /etc/fstab
+    echo "share /root/shared virtiofs rw,nofail 0 0" | tee -a /etc/fstab
   fi
 
   echo "chaging root home directory"
