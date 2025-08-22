@@ -1,0 +1,6 @@
+[user]
+	email = mohit.choudhary@indexexchange.com
+  name = Mohit Choudhary
+
+[url "git@gitlab.indexexchange.com:"]
+  insteadOf = https://gitlab.indexexchange.com

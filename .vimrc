@@ -114,6 +114,10 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 
+" copy paste to tmux buffer
+vnoremap <leader>y y<cr>:call system("tmux load-buffer -w -", @0)<cr>
+nnoremap <leader>p :let @0 = system("tmux save-buffer -")<cr>"0p<cr>g;
+
 " Disable arrow movement, resize splits instead.
 nnoremap <Up>    :resize +10<CR>
 nnoremap <Down>  :resize -10<CR>

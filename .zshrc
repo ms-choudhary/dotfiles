@@ -52,5 +52,13 @@ done
 ## fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+  eval `ssh-agent`
+  ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+fi
+
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+
+
 ## kubectl autocomplete: takes too long to load
 #[[ /home/msc/.asdf/shims/kubectl ]] && source <(kubectl completion zsh)

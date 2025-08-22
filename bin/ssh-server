@@ -3,8 +3,9 @@
 set -o errexit
 #set -o xtrace
 
-session=$(cat ~/.bitwarden_session)
-password=$(bw get password bridge-ssh --session $session)
+#session=$(cat ~/.bitwarden_session)
+#password=$(bw get password bridge-ssh --session $session)
+password=ap-south-1
 
 ixhosts --hosts > /tmp/hosts
 

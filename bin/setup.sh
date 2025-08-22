@@ -69,6 +69,10 @@ install_kubectl_linux() {
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
     install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     rm kubectl
+
+    wget --directory-prefix /tmp https://github.com/itaysk/kubectl-neat/releases/download/v2.0.4/kubectl-neat_linux_arm64.tar.gz
+    (cd /tmp && tar xvzf kubectl-neat_linux_arm64.tar.gz)
+    mv /tmp/kubectl-neat ~/bin/
   fi
 }
 
