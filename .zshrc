@@ -21,8 +21,8 @@ setopt histignorealldups sharehistory
 bindkey -v
 
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=1000000
+SAVEHIST=1000000
 HISTFILE=~/.zsh_history
 
 # Use modern completion system
@@ -62,3 +62,5 @@ export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
 
 ## kubectl autocomplete: takes too long to load
 #[[ /home/msc/.asdf/shims/kubectl ]] && source <(kubectl completion zsh)
+
+eval "$(direnv hook zsh)"

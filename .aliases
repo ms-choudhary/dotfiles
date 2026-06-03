@@ -4,6 +4,8 @@
 alias k8s1sg='export KUBECONFIG=/etc/kube/k8s1sg; kubectl config view | grep "server:"'
 alias k8s1am='export KUBECONFIG=/etc/kube/k8s1am; kubectl config view | grep "server:"'
 alias k8s1va='export KUBECONFIG=/etc/kube/k8s1va; kubectl config view | grep "server:"'
+alias k8s1fr='export KUBECONFIG=/etc/kube/k8s1fr; kubectl config view | grep "server:"'
+alias k8s1la='export KUBECONFIG=/etc/kube/k8s1la; kubectl config view | grep "server:"'
 alias k8sint='export KUBECONFIG=/etc/kube/k8sint; kubectl config view | grep "server:"'
 alias k8spandoraext='export KUBECONFIG=/etc/kube/k8spandoraext; kubectl config view | grep "server:"'
 alias k8s1ny='export KUBECONFIG=/etc/kube/k8s1ny; kubectl config view | grep "server:"'
@@ -11,6 +13,7 @@ alias k8s1sj='export KUBECONFIG=/etc/kube/k8s1sj; kubectl config view | grep "se
 alias k8sdata='export KUBECONFIG=/etc/kube/k8sdata; kubectl config view | grep "server:"'
 alias k8sops='export KUBECONFIG=/etc/kube/k8sops; kubectl config view | grep "server:"'
 alias k8skind='export KUBECONFIG=/etc/kube/k8skind; kubectl config view | grep "server:"'
+alias k8sprodops='export KUBECONFIG=/etc/kube/k8sprodops; kubectl config view | grep "server:"'
 
 # edit dotfiles
 alias dotfiles='cd ~/dotfiles;'

@@ -24,3 +24,8 @@ whois
 python3.11-venv
 python3.11-venv
 strace
+rsync
+direnv
+systemd-resolved
+tzdata
+gdb

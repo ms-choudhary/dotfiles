@@ -10,15 +10,19 @@ console() {
 }
 
 pbcopy() {
-	stdin=$(</dev/stdin);
+  stdin=$(</dev/stdin);
   #this func hides the original pbcopy
-	#pbcopy="$(which pbcopy)";
+  #pbcopy="$(which pbcopy)";
   pbcopy="/usr/bin/pbcopy"
-	if [[ -f "$pbcopy" ]]; then
-		echo "$stdin" | "$pbcopy"
-	else
-		echo "$stdin" | xclip -selection clipboard
-	fi
+  if [[ -f "$pbcopy" ]]; then
+    echo "$stdin" | "$pbcopy"
+  else
+    printf '\033]52;c;%s\a' "$(base64 | tr -d '\n')"
+  fi
+}
+
+jwt-decode() {
+  jq -R 'split(".") |.[0:2] | map(@base64d) | map(fromjson)' <<< $1
 }
 
 # docker rm container

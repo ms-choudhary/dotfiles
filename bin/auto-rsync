@@ -1,0 +1,22 @@
+#!/usr/bin/expect -f
+
+if { $argc != 2 } {
+    puts "usage: auto-rsync source destination"
+    exit 1
+}
+
+set sourcedir [lindex $argv 0]
+set destdir [lindex $argv 1]
+
+spawn rsync -avz "$sourcedir" "$destdir"
+
+expect {
+    "password:" {
+        send "ap-south-1\r"
+        exp_continue
+    }
+    eof {
+        # Wait for rsync to finish cleanly
+        wait
+    }
+}

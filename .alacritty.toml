@@ -9,3 +9,6 @@ family = "Fira Code"
 
 [selection]
 save_to_clipboard = true
+
+[terminal]
+osc52 = "OnlyCopy"

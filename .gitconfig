@@ -4,3 +4,6 @@
 
 [url "git@gitlab.indexexchange.com:"]
   insteadOf = https://gitlab.indexexchange.com
+
+[init]
+  defaultBranch = main
