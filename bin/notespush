@@ -1,0 +1,24 @@
+#! /bin/bash
+
+set -o errexit
+
+rm -rf /Users/mohit.choudhary/Documents/projects/til/notes/*
+cp -r /Users/mohit.choudhary/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/notebook/notes/* /Users/mohit.choudhary/Documents/projects/til/notes/
+
+cd /Users/mohit.choudhary/Documents/projects/til 
+find . -name '*.md' -type f -exec sed -i '' 's|](notes/|](/notes/|g' {} +
+find . -name '*.md' -type f -exec sed -i '' 's|](_images/|](/_images/|g' {} +
+
+# copy the images linked in the notes from obsidian
+grep -rhoE '\/_images\/[^)]+' notes/ | sort -u | rsync -a --files-from=- /Users/mohit.choudhary/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/notebook/ .
+
+if [ -z "$(git status --porcelain)" ]; then
+	echo "No changes. Skipping commit and push."
+else
+  git add -N .
+	git add -p .
+  git add .
+	git commit -m "Update notes - $(date '+%Y-%m-%d %H:%M')"
+	git pull --rebase
+	git push origin main
+fi

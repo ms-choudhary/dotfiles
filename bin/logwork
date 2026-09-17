@@ -1,0 +1,233 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import calendar
+import datetime as dt
+import json
+import os
+import re
+import subprocess
+import sys
+import tempfile
+from collections import defaultdict
+from pathlib import Path
+from typing import Literal, TypedDict, cast
+
+Category = Literal["work", "personal"]
+
+ROOT = Path("/Users/mohit.choudhary/Library/Mobile Documents/iCloud~md~obsidian/Documents/notebook/log")
+LEDGER_PATH = ROOT / ".timelog.jsonl"
+STATS_PATH = ROOT / "stats.md"
+
+CATEGORIES: dict[str, Category] = {
+    "w": "work",
+    "work": "work",
+    "p": "personal",
+    "personal": "personal",
+}
+
+MONTH_ABBR = {name.lower(): index for index, name in enumerate(calendar.month_abbr) if name}
+
+MINUTES_PER_BLOCK = 30
+
+GUIDE = (
+    "<!-- Enter your log entry below (markdown). Save & quit to continue. "
+    "Leave empty to abort. -->\n\n"
+)
+
+
+class LedgerRow(TypedDict):
+    date: str
+    category: Category
+    minutes: int
+
+
+def week_ending_sunday(d: dt.date) -> dt.date:
+    return d + dt.timedelta(days=6 - d.weekday())
+
+
+def heading_for(week_end: dt.date) -> str:
+    return f"## {week_end.day} {week_end.strftime('%b')}"
+
+
+def parse_heading_date(heading: str, year: int) -> dt.date | None:
+    match = re.match(r"##\s*(\d{1,2})\s*([A-Za-z]+)", heading)
+    if match is None:
+        return None
+    day_text, month_text = match.groups()
+    month = MONTH_ABBR.get(month_text.lower()[:3])
+    if month is None:
+        return None
+    try:
+        return dt.date(year, month, int(day_text))
+    except ValueError:
+        return None
+
+
+def prompt_category() -> Category:
+    while True:
+        raw = input("Category [work/personal]: ").strip().lower()
+        if raw in CATEGORIES:
+            return CATEGORIES[raw]
+        print("Please enter 'work' or 'personal' (or w/p).")
+
+
+def prompt_minutes() -> int:
+    while True:
+        raw = input("Time spent in 30-min blocks: ").strip()
+        if raw.isdigit() and int(raw) > 0:
+            return int(raw) * MINUTES_PER_BLOCK
+        print("Enter a positive whole number of blocks, e.g. 1, 2, 3.")
+
+
+def capture_entry() -> str:
+    editor = os.environ.get("EDITOR", "vi")
+    with tempfile.NamedTemporaryFile(suffix=".md", mode="w", delete=False) as tf:
+        tf.write(GUIDE)
+        path = Path(tf.name)
+    try:
+        result = subprocess.run([editor, str(path)])
+        if result.returncode != 0:
+            print(f"Editor exited with status {result.returncode}; aborting.", file=sys.stderr)
+            sys.exit(1)
+        text = path.read_text()
+    finally:
+        path.unlink(missing_ok=True)
+
+    lines = [line for line in text.splitlines() if not line.strip().startswith("<!--")]
+    return "\n".join(lines).strip()
+
+
+def insert_entry(log_path: Path, week_end: dt.date, entry_text: str) -> None:
+    heading = heading_for(week_end)
+    existing = log_path.read_text() if log_path.exists() else ""
+    headings = re.findall(r"^## .+$", existing, flags=re.MULTILINE)
+
+    if headings and headings[-1].strip() == heading:
+        new_content = existing.rstrip("\n") + "\n" + entry_text + "\n"
+    else:
+        if headings:
+            last_date = parse_heading_date(headings[-1], week_end.year)
+            if last_date is not None and last_date >= week_end:
+                raise ValueError(
+                    f"Last heading in {log_path} is {headings[-1].strip()!r}, which is not "
+                    f"older than the current week ({heading}). Refusing to guess where to "
+                    "insert; backfilling past weeks isn't supported yet."
+                )
+        sep = "\n\n" if existing.strip() else ""
+        new_content = existing.rstrip("\n") + sep + heading + "\n\n" + entry_text + "\n"
+
+    log_path.write_text(new_content)
+
+
+def append_ledger(date: dt.date, category: Category, minutes: int) -> None:
+    row: LedgerRow = {"date": date.isoformat(), "category": category, "minutes": minutes}
+    with LEDGER_PATH.open("a") as f:
+        f.write(json.dumps(row) + "\n")
+
+
+def load_ledger() -> list[LedgerRow]:
+    if not LEDGER_PATH.exists():
+        return []
+    rows: list[LedgerRow] = []
+    for line in LEDGER_PATH.read_text().splitlines():
+        if line.strip():
+            rows.append(cast(LedgerRow, json.loads(line)))
+    return rows
+
+
+def empty_totals() -> dict[Category, int]:
+    return {"work": 0, "personal": 0}
+
+
+def months_ago(d: dt.date, n: int) -> dt.date:
+    month = d.month - n
+    year = d.year + (month - 1) // 12
+    month = (month - 1) % 12 + 1
+    day = min(d.day, calendar.monthrange(year, month)[1])
+    return dt.date(year, month, day)
+
+
+def fmt_hm(minutes: int) -> str:
+    hours, mins = divmod(minutes, 60)
+    return f"{hours}h {mins:02d}m"
+
+
+def fmt_pct(minutes: int, total: int) -> str:
+    if total == 0:
+        return "0%"
+    return f"{round(minutes / total * 100)}%"
+
+
+def build_stats(ledger: list[LedgerRow], today: dt.date) -> str:
+    by_week: dict[dt.date, dict[Category, int]] = defaultdict(empty_totals)
+    for row in ledger:
+        week_end = week_ending_sunday(dt.date.fromisoformat(row["date"]))
+        by_week[week_end][row["category"]] += row["minutes"]
+
+    def total_since(start: dt.date) -> dict[Category, int]:
+        totals = empty_totals()
+        for row in ledger:
+            if dt.date.fromisoformat(row["date"]) >= start:
+                totals[row["category"]] += row["minutes"]
+        return totals
+
+    windows: list[tuple[str, dt.date]] = [
+        ("This month", today.replace(day=1)),
+        ("Last 3 months", months_ago(today, 3)),
+        ("Last 6 months", months_ago(today, 6)),
+    ]
+
+    lines = [
+        "<!-- auto-generated by log-work -- do not edit by hand -->",
+        "# Stats",
+        "",
+        f"_Last updated: {today.isoformat()}_",
+        "",
+        "## Summary",
+        "",
+        "| Period | Work | Personal | Total |",
+        "|---|---|---|---|",
+    ]
+    for label, start in windows:
+        totals = total_since(start)
+        total = totals["work"] + totals["personal"]
+        work = f"{fmt_hm(totals['work'])} ({fmt_pct(totals['work'], total)})"
+        personal = f"{fmt_hm(totals['personal'])} ({fmt_pct(totals['personal'], total)})"
+        lines.append(f"| {label} | {work} | {personal} | {fmt_hm(total)} |")
+
+    lines += ["", "## Weekly breakdown", "", "| Week ending | Work | Personal | Total |", "|---|---|---|---|"]
+    for week_end in sorted(by_week, reverse=True):
+        totals = by_week[week_end]
+        total = totals["work"] + totals["personal"]
+        lines.append(f"| {week_end.isoformat()} | {fmt_hm(totals['work'])} | {fmt_hm(totals['personal'])} | {fmt_hm(total)} |")
+
+    return "\n".join(lines) + "\n"
+
+
+def write_stats(today: dt.date) -> None:
+    STATS_PATH.write_text(build_stats(load_ledger(), today))
+
+
+def main() -> None:
+    today = dt.date.today()
+    category = prompt_category()
+    minutes = prompt_minutes()
+
+    raw_entry = capture_entry()
+    if not raw_entry:
+        print("Empty entry, aborting.")
+        sys.exit(1)
+
+    week_end = week_ending_sunday(today)
+    log_path = ROOT / category / f"{week_end.year}.md"
+
+    insert_entry(log_path, week_end, raw_entry)
+    append_ledger(today, category, minutes)
+    write_stats(today)
+
+    print(f"Logged {minutes}m to {category} under {heading_for(week_end)} in {log_path}")
+
+
+if __name__ == "__main__":
+    main()
