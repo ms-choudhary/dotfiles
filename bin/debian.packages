@@ -29,3 +29,5 @@ direnv
 systemd-resolved
 tzdata
 gdb
+nmap
+socat

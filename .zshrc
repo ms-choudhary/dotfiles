@@ -64,3 +64,5 @@ export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
 #[[ /home/msc/.asdf/shims/kubectl ]] && source <(kubectl completion zsh)
 
 eval "$(direnv hook zsh)"
+
+. "$HOME/.local/bin/env"

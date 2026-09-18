@@ -17,7 +17,7 @@ pbcopy() {
   if [[ -f "$pbcopy" ]]; then
     echo "$stdin" | "$pbcopy"
   else
-    printf '\033]52;c;%s\a' "$(base64 | tr -d '\n')"
+    printf '\033]52;c;%s\a' "$(echo "$stdin" | base64 | tr -d '\n')"
   fi
 }
 

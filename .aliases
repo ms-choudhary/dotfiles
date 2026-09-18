@@ -14,6 +14,7 @@ alias k8sdata='export KUBECONFIG=/etc/kube/k8sdata; kubectl config view | grep "
 alias k8sops='export KUBECONFIG=/etc/kube/k8sops; kubectl config view | grep "server:"'
 alias k8skind='export KUBECONFIG=/etc/kube/k8skind; kubectl config view | grep "server:"'
 alias k8sprodops='export KUBECONFIG=/etc/kube/k8sprodops; kubectl config view | grep "server:"'
+alias k8smgmtest='export KUBECONFIG=/etc/kube/k8smgmtest; kubectl config view | grep "server:"'
 
 # edit dotfiles
 alias dotfiles='cd ~/dotfiles;'
