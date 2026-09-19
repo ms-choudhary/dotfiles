@@ -15,6 +15,15 @@ set noswapfile                  " Don't use swapfile
 set nobackup		        " Don't create annoying backup files
 set nowritebackup
 
+" Persistent undo: keep undo history across closing/reopening a file
+if !isdirectory($HOME . "/.vim/undodir")
+  call mkdir($HOME . "/.vim/undodir", "p", 0700)
+endif
+set undodir=~/.vim/undodir
+set undofile
+set undolevels=1000
+set undoreload=10000
+
 set splitright                  " Split vertical windows right to the current windows
 set splitbelow                  " Split horizontal windows below to the current windows
 set encoding=utf-8              " Set default encoding to UTF-8
