@@ -1,0 +1,14 @@
+#!/bin/sh
+# Portable clipboard-copy used by tmux/vim bindings on both macOS and Debian.
+# macOS: shells out to the real /usr/bin/pbcopy.
+# Debian (or anywhere without a system clipboard): falls back to an OSC52
+# escape sequence so terminals like iTerm2/kitty/alacritty/tmux can still
+# grab the copied text over SSH.
+
+stdin=$(cat)
+
+if [ -x /usr/bin/pbcopy ]; then
+  printf '%s' "$stdin" | /usr/bin/pbcopy
+else
+  printf '\033]52;c;%s\a' "$(printf '%s' "$stdin" | base64 | tr -d '\n')"
+fi

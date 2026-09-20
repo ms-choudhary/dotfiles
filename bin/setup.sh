@@ -5,9 +5,22 @@
 set -o errexit
 set -o pipefail
 
+go_arch() {
+  case "$(uname -m)" in
+    x86_64) echo amd64 ;;
+    aarch64|arm64) echo arm64 ;;
+    *) echo "ERROR: unsupported architecture $(uname -m)" >&2; exit 1 ;;
+  esac
+}
+
 install_golang_debian() {
-  wget --directory-prefix /tmp https://go.dev/dl/go1.24.0.linux-arm64.tar.gz
-  rm -rf /usr/local/go && tar -C /usr/local -xzf /tmp/go1.24.0.linux-arm64.tar.gz
+  arch=$(go_arch)
+  wget --directory-prefix /tmp "https://go.dev/dl/go1.24.0.linux-${arch}.tar.gz"
+  rm -rf /usr/local/go && tar -C /usr/local -xzf "/tmp/go1.24.0.linux-${arch}.tar.gz"
+}
+
+install_golang_mac() {
+  brew install go
 }
 
 install_podman_ubuntu() {
@@ -66,12 +79,13 @@ install_starship() {
 
 install_kubectl_linux() {
   if ! which kubectl; then
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
+    arch=$(go_arch)
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/${arch}/kubectl"
     install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     rm kubectl
 
-    wget --directory-prefix /tmp https://github.com/itaysk/kubectl-neat/releases/download/v2.0.4/kubectl-neat_linux_arm64.tar.gz
-    (cd /tmp && tar xvzf kubectl-neat_linux_arm64.tar.gz)
+    wget --directory-prefix /tmp "https://github.com/itaysk/kubectl-neat/releases/download/v2.0.4/kubectl-neat_linux_${arch}.tar.gz"
+    (cd /tmp && tar xvzf "kubectl-neat_linux_${arch}.tar.gz")
     mv /tmp/kubectl-neat ~/bin/
   fi
 }
@@ -156,7 +170,9 @@ install_base_mac() {
                       yq \
                       jq \
                       colordiff \
-                      step
+                      step \
+                      expect \
+                      direnv
 
   install_font_mac
 

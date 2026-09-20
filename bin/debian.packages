@@ -26,6 +26,7 @@ python3.11-venv
 strace
 rsync
 direnv
+xdg-utils
 systemd-resolved
 tzdata
 gdb

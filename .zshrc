@@ -65,4 +65,4 @@ export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
 
 eval "$(direnv hook zsh)"
 
-. "$HOME/.local/bin/env"
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"

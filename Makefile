@@ -21,7 +21,14 @@ bins: ## Installs the binary scripts
 	  ln -sfn $$file $(HOME)/bin/$$f; \
 	done;
 
-etcs: ## Installs etc config files
+# etc/ssh/sshd_config assumes the Debian sftp-server path and root-login
+# bootstrap flow from Debian.md; it would mis-configure sshd on macOS, so
+# the recipe below skips itself there.
+etcs: ## Installs etc config files (Linux only)
+	@if [ "$$(uname)" != "Linux" ]; then \
+		echo "skipping etcs: etc/ssh/sshd_config is Debian-specific, not applicable on $$(uname)"; \
+		exit 0; \
+	fi; \
 	for file in $(shell find etc -type f); do \
 		mkdir -p /$$(dirname $$file); \
 	  ln -sfn $(CURDIR)/$$file /$$file; \
