@@ -1,3 +1,11 @@
+# >>> Docker Sandboxes (managed: default) >>>
+Include "/Users/mohit.choudhary/Library/Application Support/com.docker.sandboxes/sandboxes/ssh/config"
+# <<< Docker Sandboxes (managed: default) <<<
+# Added by OrbStack: 'orb' SSH host for Linux machines
+# This only works if it's at the top of ssh_config (before any Host blocks).
+# This won't be added again if you remove it.
+Include ~/.orbstack/ssh/config
+
 Host edge
   Hostname 127.0.0.1
   Port 9999
@@ -62,7 +70,7 @@ Host dockervm
   HostName 10.5.33.8
 
 Host bridge
-  #HostName bridge-2.win.indexww.com
+  HostName bridge-1.win.indexww.com
   User mohit.choudhary
   IdentityFile ~/.ssh/id_index
 
@@ -75,3 +83,18 @@ Host msclab01
   User mohit.choudhary
   IdentityFile ~/.ssh/id_github
   HostName 192.168.31.11
+
+Host ixdev
+  User root
+  IdentityFile ~/.ssh/id_github
+  HostName ixdev.local
+
+Host homelab01
+  User root
+  IdentityFile ~/.ssh/id_github
+  HostName homelab01.local
+
+Host homelab
+  User root
+  IdentityFile ~/.ssh/id_github
+  HostName homelab.local
