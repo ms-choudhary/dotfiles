@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import calendar
 import datetime as dt
 import json
@@ -209,12 +210,57 @@ def write_stats(today: dt.date) -> None:
     STATS_PATH.write_text(build_stats(load_ledger(), today))
 
 
-def main() -> None:
-    today = dt.date.today()
-    category = prompt_category()
-    minutes = prompt_minutes()
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Log a work/personal time entry. With no flags it runs interactively."
+    )
+    parser.add_argument(
+        "-c", "--category",
+        choices=sorted(CATEGORIES),
+        help="work/personal (or w/p). Prompts if omitted.",
+    )
+    parser.add_argument(
+        "-b", "--blocks",
+        type=int,
+        help="Number of 30-minute blocks. Prompts if omitted.",
+    )
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        "-e", "--entry",
+        help="Entry text passed directly as an argument.",
+    )
+    group.add_argument(
+        "--stdin",
+        action="store_true",
+        help="Read entry text from standard input instead of opening $EDITOR.",
+    )
+    return parser.parse_args(argv)
 
-    raw_entry = capture_entry()
+
+def main() -> None:
+    args = parse_args(sys.argv[1:])
+    today = dt.date.today()
+
+    if args.category is not None:
+        category = CATEGORIES[args.category]
+    else:
+        category = prompt_category()
+
+    if args.blocks is not None:
+        if args.blocks <= 0:
+            print("--blocks must be a positive whole number.", file=sys.stderr)
+            sys.exit(1)
+        minutes = args.blocks * MINUTES_PER_BLOCK
+    else:
+        minutes = prompt_minutes()
+
+    if args.stdin:
+        raw_entry = sys.stdin.read().strip()
+    elif args.entry is not None:
+        raw_entry = args.entry.strip()
+    else:
+        raw_entry = capture_entry()
+
     if not raw_entry:
         print("Empty entry, aborting.")
         sys.exit(1)

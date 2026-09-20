@@ -17,7 +17,6 @@ if [ -z "$(git status --porcelain)" ]; then
 else
   git add -N .
 	git add -p .
-  git add .
 	git commit -m "Update notes - $(date '+%Y-%m-%d %H:%M')"
 	git pull --rebase
 	git push origin main
