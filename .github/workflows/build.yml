@@ -39,6 +39,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           # Tags using the branch name dynamically
           tags: |
-            ghcr.io/ms-choudhary/sandbox:${{ github.ref_name }}
+            ghcr.io/ms-choudhary/dev:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

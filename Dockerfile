@@ -27,7 +27,18 @@ RUN arch=$(dpkg --print-architecture) \
 RUN curl -fsSL "https://go.dev/dl/go1.24.0.linux-$(dpkg --print-architecture).tar.gz" \
   | tar -xz -C /usr/local
 
-RUN useradd -m -u 1000 -s /bin/zsh msc \
+# Docker Engine from Docker's apt repo. sbx starts dockerd itself when the
+# start-docker label is set, with storage on its own volume.
+RUN install -m 0755 -d /etc/apt/keyrings \
+  && curl -fsSLo /etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg \
+  && printf 'Types: deb\nURIs: https://download.docker.com/linux/debian\nSuites: trixie\nComponents: stable\nSigned-By: /etc/apt/keyrings/docker.asc\n' \
+    > /etc/apt/sources.list.d/docker.sources \
+  && apt-get update -o APT::Update::Error-Mode=any \
+  && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
+  && rm -rf /var/lib/apt/lists/*
+LABEL com.docker.sandboxes.start-docker="true"
+
+RUN useradd -m -u 1000 -s /bin/zsh -G docker msc \
   && echo 'msc ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/msc
 
 USER msc
