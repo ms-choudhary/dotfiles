@@ -33,3 +33,4 @@ wget
 openssh-client
 procps
 less
+file
