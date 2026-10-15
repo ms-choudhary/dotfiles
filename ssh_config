@@ -98,3 +98,8 @@ Host homelab
   User root
   IdentityFile ~/.ssh/id_github
   HostName homelab.local
+
+Host *mgm*
+  User mohit.choudhary
+  IdentityFile ~/.ssh/id_index
+  ProxyCommand ssh bridge -W %h:%p
