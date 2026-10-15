@@ -9,4 +9,4 @@ echo "installing package: $1"
 
 echo "$1" >> $DOTFILES/bin/debian.packages
 
-apt install "$1"
+sudo apt install "$1"

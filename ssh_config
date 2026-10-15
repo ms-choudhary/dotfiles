@@ -33,7 +33,7 @@ Host github.com
   IdentityFile ~/.ssh/id_github
 
 Host gitlab.indexexchange.com
-  IdentityFile ~/.ssh/id_github
+  IdentityFile ~/.ssh/id_index
 
 Host bitbucket.org
   IdentityFile ~/.ssh/id_github

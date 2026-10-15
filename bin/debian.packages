@@ -34,3 +34,4 @@ openssh-client
 procps
 less
 file
+ansible
