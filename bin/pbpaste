@@ -1,0 +1,14 @@
+#!/bin/sh
+# Portable clipboard-paste, the counterpart to ~/bin/pbcopy.
+# macOS: shells out to the real /usr/bin/pbpaste.
+# Debian: OSC52 can't reliably read the clipboard back, so fall back to the
+# tmux paste buffer (tmux copy-pipe also stores what pbcopy was sent).
+
+if [ -x /usr/bin/pbpaste ]; then
+  /usr/bin/pbpaste
+elif [ -n "$TMUX" ]; then
+  tmux save-buffer -
+else
+  echo "pbpaste: no clipboard available (not macOS, not in tmux)" >&2
+  exit 1
+fi
