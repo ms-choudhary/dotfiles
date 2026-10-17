@@ -34,7 +34,7 @@ setopt interactivecomments
 
 # completion
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zsh/cache
+zstyle ':completion:*' cache-path ${XDG_CACHE_HOME:-~/.cache}/zsh
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-colors ''
 

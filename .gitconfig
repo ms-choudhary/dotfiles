@@ -7,7 +7,5 @@
 
 [init]
   defaultBranch = main
-[safe]
-	directory = /home/msc
 [core]
 	checkStat = minimal

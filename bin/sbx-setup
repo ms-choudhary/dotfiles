@@ -1,0 +1,32 @@
+#! /bin/bash
+# Set up the dev sandbox home: SSH keys from Vault, dotfiles, vim plugins.
+# Run after `vault login`. Safe to rerun.
+#
+#   sbx-setup <machine>    e.g. sbx-setup ix-mac-m3
+
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+  echo "usage: sbx-setup <machine>" >&2
+  exit 1
+fi
+machine=$1
+
+umask 077
+mkdir -p ~/.ssh
+for f in id_ed25519 id_ed25519.pub; do
+  key=$(vault kv get -mount=kv2 -field="$f" "machines/$machine/ssh")
+  printf '%s\n' "$key" > ~/.ssh/"$f"
+done
+umask 022
+
+if [[ ! -d ~/dotfiles ]]; then
+  GIT_SSH_COMMAND='ssh -o StrictHostKeyChecking=accept-new' \
+    git clone git@github.com:ms-choudhary/dotfiles.git ~/dotfiles
+fi
+
+mkdir -p ~/.vim/autoload ~/projects/src
+cp ~/dotfiles/.vim/autoload/* ~/.vim/autoload/
+make -C ~/dotfiles dotfiles bins
+# -u: Ex mode skips vimrc by default; -N: vimrc uses line continuations
+vim -Nes -u ~/.vimrc -i NONE -c 'PlugInstall --sync' -c 'qa'

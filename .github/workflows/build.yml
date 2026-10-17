@@ -6,6 +6,7 @@ on:
     paths:
       - 'Dockerfile'
       - 'bin/debian.packages'
+      - 'bin/sbx-setup'
 
 jobs:
   build-and-push:
